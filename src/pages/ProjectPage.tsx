@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { apiClient } from "../clients/api";
 import { Link } from "react-router-dom";
 import type { Project } from "../types";
-import { AuthContext } from "../context/AuthProvider";
+//import { AuthContext } from "../context/AuthProvider";
 
 function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
