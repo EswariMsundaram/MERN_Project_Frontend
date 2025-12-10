@@ -1,17 +1,20 @@
-import { createContext, useState, useEffect } from "react";
-import type { User } from "../types";
+import React, {createContext, useState, useEffect} from "react";
+import type {User} from "../types";
+import {apiClient} from "../clients/api";
 
 interface AuthContextType {
-  user: User | null;
-  setUser: (user: User) => void;
-  logIn: (username: string, password: string) => void;
+  user: User | null; //Logged-in user info
+  setUser: (user: User|null) => void; //Manually update user
+  logIn: (email: string, password: string) => void; 
   register: (username: string, email: string, password: string) => void;
   logOut: () => void;
-  token: string | null;
-  setToken: (token: string) => void;
+  token: string | null; //JWT token from backend
+  setToken: (token: string|null) => void; //Manually update token
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
+
+//Create Auth context with default value null
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 interface AuthProviderProps {
@@ -19,42 +22,69 @@ interface AuthProviderProps {
 }
 
 export default function AuthProvider({ children }: AuthProviderProps) {
-  // Check if there is a token in localStorage and set them in state
+  // Checks if there is a token in localStorage and set them in state
   const [user, setUser] = useState<User | null>(() => {
     try {
-      const value = localStorage.getItem("user");
-      if (value) {
-        return JSON.parse(value);
-      } else return null;
-    } catch (error) {
-      console.error(error);
+      const value = localStorage.getItem("user")
+      return value ? JSON.parse(value) : null //convert JSON->object
+    } catch {
+      return null
     }
   });
 
+  //token state restored from local storage
   const [token, setToken] = useState<string | null>(() => {
     try {
-      const value = localStorage.getItem("token");
-      if (value) {
-        return JSON.parse(value);
-      } else return null;
-    } catch (error) {
-      console.error(error);
+      const value = localStorage.getItem("token")
+      return value ? JSON.parse(value) : null
+    } catch  {
+      return null
     }
   });
 
-  // useEffect(() => {
-  //   try {
+  //this keeps the user saved in local storage so anytime "user" state changes
+  useEffect(() => {
+    if(user) {
+        localStorage.setItem("user", JSON.stringify(user))
+    }else {
+        localStorage.removeItem("user") //remove when logout
+    }
+    }, [user]);
 
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }, []);
+   // Keeps the token saved in local storage and the token state changes anytime
+   useEffect(()=>{
+    if(token) {
+         localStorage.setItem("token", JSON.stringify(token))
+    }else{
+        localStorage.removeItem("token")
+    }
+   },[token])
 
-  const logIn = async (username: string, password: string) => {};
+   //Login function
+  const logIn = async (email: string, password: string) => {
+    const res=await apiClient.post("/api/users/login", {email,password}) //calls backend
+    //backend returns user and token
+    const {user:userData, token:jwt}=res.data
+    setUser(userData) //set the logged in user
+    setToken(jwt) //set the JWT token
+  };
 
-  const register = async (username: string, email: string, password: string) => {};
+  //Register function
+  const register = async (username: string, email: string, password: string) => {
+    //calls the backend
+    const res=await apiClient.post("/api/users/register",{
+        username, email, password
+    })
+    const {user:userData, token:jwt}=res.data // saves user and token
+    setUser(userData)
+    setToken(jwt)
+  };
 
-  const logOut = () => {};
+  //logout functions - clears everything
+  const logOut = () => {
+    setUser(null)
+    setToken(null)
+  };
 
   return (
     <AuthContext.Provider

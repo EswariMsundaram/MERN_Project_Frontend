@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { apiClient } from "../clients/api";
 import { Link } from "react-router-dom";
 import type { Project } from "../types";
+import { AuthContext } from "../context/AuthProvider";
 
 function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -39,14 +40,13 @@ function ProjectsPage() {
       setLoading(true);
       const res = await apiClient.post("/api/projects", { name, description });
       setProjects((prev) => [...prev, res.data]);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setName("")
+    setDescription("")
     } catch (error: any) {
-      console.error(error);
+      
       setError(error.message);
     } finally {
       setLoading(false);
-      setName("")
-      setDescription("")
     }
   };
   return (
@@ -85,8 +85,7 @@ function ProjectsPage() {
       {error && <div>{error}</div>}
 
       <div className="w-full flex gap-5 mt-10">
-        {projects &&
-          projects.map((project) => (
+        {projects.map((project) => (
             <div
               key={project._id}
               className="text-white w-50 flex flex-col h-50 border border-red-500 p-2 text-center rounded"

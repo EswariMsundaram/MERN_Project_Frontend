@@ -2,53 +2,77 @@
 import { useEffect,useState } from "react"
 import { apiClient } from "../clients/api"
 import { useParams } from "react-router-dom"
-import type { Project } from "../types"
+import type { Project,Task } from "../types"
 function ProjectDetailsPage(){
      const [project,setProject]=useState<Project|null>(null)
-        const [loading,setLoading]=useState(false)
-        const [error,setError]=useState('')
+     const [tasks,setTasks]=useState<Task[]>([])
 
+        const [loadingProject,setLoadingProject]=useState(true)
+        const [loadingTasks,setLoadingTasks]=useState(true)
+        const [error,setError]=useState('')
+        
         const {projectId}=useParams()
     
         useEffect(()=>{
             const fetchProjectDetails=async ()=>{
                 try{
-                    setLoading(true)
+                    setLoadingProject(true)//start loading project
                     const res=await apiClient.get(`/api/projects/${projectId}`);
                     console.log(res.data)
                     setProject(res.data)
                 }catch(error:any){
                     console.log(error)
-                    setError(error.message)
+                    setError("Failed to load project")
                 }finally{
-                    setLoading(false)
+                    setLoadingProject(false) //done loading project
                 }
             }
             fetchProjectDetails()
         },[projectId])
 
         useEffect(() => {
-    // const fetchProjectTasks = async () => {
-    //     try {
-    //         const tasks = await apiClient.get(`/api/projects/${projectId}/tasks`);
-            // state
-            // loading error
-    //     } catch (error) {
-    //         console.error(error);
+    const fetchProjectTasks = async () => {
+    try {
+            setLoadingTasks(true) //starts loading tasks
+            const taskRes = await apiClient.get(`/api/projects/${projectId}/tasks`);
+            setTasks(taskRes.data ||[])
+        } catch (error) {
+            console.error(error);
+            setError("Failed to load tasks")
             
-    //     }
-    // }
-    //  fetchProjectTasks()
+        }finally{
+            setLoadingTasks(false) //done loading tasks
+        }
+    }
+     fetchProjectTasks()
   }, [projectId])
 
-  if(loading)return <div className="text-3xl text-white">Loading...</div>
-  if (error) return <div className="text-3xl text-white">Error loading Project</div>;
+  if(loadingProject || loadingTasks)return <div className="text-3xl text-white">Loading...</div>
+  if (error) return <div className="text-3xl text-white">{error}</div>;
     return(
         <div className="text-white">
             <h1>Project Details</h1>
             <div>
                 <div className="text-2xl">{project?.name}</div>
                 <div className="text-xl">{project?.description}</div>
+            </div>
+
+            <div>
+                <h2>Tasks</h2>
+                {tasks.length===0 ?
+                (<div>No task yet</div>):
+                (
+                    <ul>
+                        {tasks.map((t)=>(
+                            <li key={t._id}>
+                                <div>{t.title}</div>
+                                <div>{t.description}</div>
+                                <div>{t.status}</div>
+                            </li>
+                        ))}
+                    </ul>
+                )
+                }
             </div>
         </div>
     )
