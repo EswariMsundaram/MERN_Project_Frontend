@@ -1,36 +1,52 @@
 import { useState,useContext } from "react";
+import { AuthContext } from "../context/AuthProvider";
+import { useNavigate } from "react-router-dom";
 
 function AuthPage() {
-  const [showRegister, setShowRegister] = useState(true);
+
+  const [showRegister, setShowRegister] = useState(true); //useState for Show register or login form
+
+  //States for input
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
+  const auth=useContext(AuthContext) //access auth context - authenctication
+const navigate=useNavigate() //to redirect to another login/register
+
+  const handleLogin = async (e:React.FormEvent) => {
+    e.preventDefault()
     try {
       setError("");
       setLoading(true);
-      // api call here
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (!auth) return;
+        await auth.logIn(email, password); //calls login function from AuthProvider
+
+      navigate("/projects") //redirects user to project page
+      
     } catch (error: any) {
       console.error(error.message);
-      setError(error.message);
+      setError(error.message || "Login Failed");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleRegister = async () => {
+  const handleRegister = async (e:React.FormEvent) => {
+    e.preventDefault()
     try {
       setError("");
       setLoading(true);
-      // api call here
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if(!auth) return;
+      await auth.register(username, email, password) //calls register function from Authprovider
+      
+      navigate("/projects") //redirects after successful register
     } catch (error: any) {
       console.error(error.message);
-      setError(error.message);
+      setError(error.message ||"Register Failed");
     } finally {
       setLoading(false);
     }
@@ -73,8 +89,10 @@ function AuthPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="ml-10 border rounded"
+              required
             />
           </label>
+
           <label htmlFor="password">
             Password:
             <input
@@ -97,11 +115,13 @@ function AuthPage() {
           {loading && <div className="animate-pulse">...</div>}
         </form>
       ) : (
+        //Login Form
         <form
           onSubmit={handleLogin}
           className="border mt-10 p-2 h-60 w-150 flex flex-col justify-around items-center rounded"
         >
           <div className="text-xl font-bold">Login</div>
+          {/*Email */}
           <label htmlFor="email">
             Email:
             <input
@@ -113,6 +133,8 @@ function AuthPage() {
               className="ml-10 border rounded"
             />
           </label>
+
+           {/*Password */}
           <label htmlFor="password">
             Password:
             <input
@@ -124,9 +146,10 @@ function AuthPage() {
               className="ml-3 border rounded"
             />
           </label>
+
           <input
             type="submit"
-            value="Register"
+            value="Login"
             className="border py-2 px-4 rounded"
           />
 
@@ -135,7 +158,7 @@ function AuthPage() {
         </form>
       )}
 
-      {/* TOGGLE FORM  */}
+      {/* TOGGLE FORM between Login/Register  */}
       {showRegister ? (
         <div>
           Already have an account?{" "}
