@@ -5,7 +5,7 @@ function Navbar(){
         <nav className="text-black text-xl flex justify-between items-center w-full h-10 bg-yellow-500">
             <NavLink to="/">Home</NavLink>
             <NavLink to="/projects">Projects</NavLink>
-            
+            <NavLink to="/auth">SignIn/Signup</NavLink>
         </nav>
     )
 }
