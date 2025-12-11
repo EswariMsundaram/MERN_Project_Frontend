@@ -1,75 +1,101 @@
-# React + TypeScript + Vite
+Full-Stack MERN App A simple Project & Task Management App built using
+the MERN stack: MongoDB (database) Express.js (backend framework)
+React + Vite + TypeScript (frontend) Node.js (runtime) Users can
+register, log in, create projects, update, delete and view tasks for
+each project. This project is built to be beginner-friendly, with clean
+code and simple steps.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+🚀 Features Authentication Register new users Log in existing users
+JWT-based auth Protected routes Logout button Projects Create a project
+View all your projects Update and Delete projects View project details
+Uses protected API routes Tasks Creates new task with optional status
+change View all Task
 
-Currently, two official plugins are available:
+🛠️ Technologies Used Frontend React TypeScript React Router DOM Axios
+TailwindCSS Context API Backend Node.js Express.js MongoDB / Mongoose
+JWT Authentication Bcrypt (password hashing) 📂 Project Structure
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+frontend/
+│── src/
+│   │── App.tsx
+│   │── main.tsx
+│   │── index.css
+│   │
+│   ├── clients/
+│   │   └── api.ts
+│   │
+│   ├── context/
+│   │   └── AuthProvider.tsx
+│   │
+│   ├── components/
+│   │   ├── Navbar.tsx
+│   │   └── ProtectedRoute.tsx
+│   │
+│   ├── pages/
+│   │   ├── HomePage.tsx
+│   │   ├── AuthPage.tsx
+│   │   ├── CreateTaskPage.tsx
+│   │   ├── ProjectsPage.tsx
+│   │   └── ProjectDetailsPage.tsx
+│   │
+│   ├── types/
+│   │   └── index.ts
+│
+│── .env
+│── package.json
+│── README.md
 
-## React Compiler
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+backend/
+│── controllers/
+│   └── userController.js
+│
+│── middlewares/
+│   └── auth.js
+│
+│── models/
+│   ├── Project.js
+│   ├── Task.js
+│   └── User.js
+│
+│── routes/
+│   ├── projectRoutes.js
+│   ├── taskRoutes.js
+│   └── userRoutes.js
+│
+│── config/
+│── node_modules/
+│── .env
+│── package.json
+│── .gitignore
 
-Note: This will impact Vite dev & build performances.
+⚙️ Installation & Setup 1. Clone the Repository git clone
+<https://github.com/EswariMsundaram/frontend-project-manager.git> cd
+mern-project-frontend
 
-## Expanding the ESLint configuration
+📌 Backend Setup 2. Install backend dependencies cd backend npm install
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+3.  Create .env file Inside /backend:
+    MONGO_URI=mongodb://127.0.0.1:27017/project-manager
+    JWT_SECRET=your_jwt_secret PORT=4000
+4.  Start backend npm start Backend runs at: http://localhost:4000
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+📌 Frontend Setup 5. Install frontend dependencies Go to frontend
+folder: cd frontend npm install 6. Create a .env file Inside /frontend:
+VITE_BACKEND_URL=http://localhost:4000 Make sure this matches your
+backend URL. 7. Run the frontend npm run dev Frontend runs at something
+like: http://localhost:5173
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+🔐 Authentication Flow (How It Works) User registers or logs in Backend
+returns { user, token } Frontend stores user & token in localStorage
+Axios interceptor attaches Authorization: Bearer `<token>`{=html}
+Protected routes check if AuthContext.user exists User can access:
+/projects /projects/:projectId If not logged in → redirected to /auth.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+📡 API Endpoints (Backend) Auth Projects Tasks
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+🧪 Testing With Postman Register: POST /api/users/register Login: POST
+/api/users/login Test a protected route with a valid token.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+🎯 Future Improvements Features you can add later: Edit and Delete Tasks
+User profile page Home Page Improvements
