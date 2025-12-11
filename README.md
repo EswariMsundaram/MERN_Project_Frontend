@@ -1,21 +1,37 @@
-Full-Stack MERN App A simple Project & Task Management App built using
-the MERN stack: MongoDB (database) Express.js (backend framework)
-React + Vite + TypeScript (frontend) Node.js (runtime) Users can
-register, log in, create projects, update, delete and view tasks for
+**Full-Stack MERN App**
+A simple Project & Task Management App built using
+MongoDB (database)
+Express.js (backend framework)
+React + Vite + TypeScript (frontend)
+Node.js (runtime)
+Users can
+register, log in, create projects, update, delete and create and view tasks for
 each project. This project is built to be beginner-friendly, with clean
 code and simple steps.
 
-🚀 Features Authentication Register new users Log in existing users
-JWT-based auth Protected routes Logout button Projects Create a project
-View all your projects Update and Delete projects View project details
-Uses protected API routes Tasks Creates new task with optional status
-change View all Task
+🚀** Features Authentication** 
+Register new users Log in existing users
+JWT-based auth Protected routes 
+Logout button Projects 
+Uses protected API routes 
 
-🛠️ Technologies Used Frontend React TypeScript React Router DOM Axios
-TailwindCSS Context API Backend Node.js Express.js MongoDB / Mongoose
-JWT Authentication Bcrypt (password hashing) 📂 Project Structure
+🛠️ **Technologies Used**
+**Frontend **
+React
+TypeScript 
+React Router DOM Axios
+TailwindCSS 
+Context API 
 
-frontend/
+**Backend **
+Node.js 
+Express.js 
+MongoDB / Mongoose
+JWT Authentication Bcrypt (password hashing) 
+
+📂** Project Structure**
+
+**frontend/**
 │── src/
 │   │── App.tsx
 │   │── main.tsx
@@ -46,7 +62,7 @@ frontend/
 │── README.md
 
 
-backend/
+**backend/**
 │── controllers/
 │   └── userController.js
 │
@@ -69,33 +85,41 @@ backend/
 │── package.json
 │── .gitignore
 
-⚙️ Installation & Setup 1. Clone the Repository git clone
+****⚙️ Installation & Setup ** **
+1.Clone the Repository git clone
 <https://github.com/EswariMsundaram/frontend-project-manager.git> cd
 mern-project-frontend
 
-📌 Backend Setup 2. Install backend dependencies cd backend npm install
+**📌 Backend Setup**
+2. Install backend dependencies cd backend npm install
 
-3.  Create .env file Inside /backend:
-    MONGO_URI=mongodb://127.0.0.1:27017/project-manager
-    JWT_SECRET=your_jwt_secret PORT=4000
+3.  Create .env file 
 4.  Start backend npm start Backend runs at: http://localhost:4000
+**
+📌** **Frontend Setup** 
+5. Install frontend dependencies Go to frontend
+folder: cd frontend npm install
 
-📌 Frontend Setup 5. Install frontend dependencies Go to frontend
-folder: cd frontend npm install 6. Create a .env file Inside /frontend:
-VITE_BACKEND_URL=http://localhost:4000 Make sure this matches your
-backend URL. 7. Run the frontend npm run dev Frontend runs at something
-like: http://localhost:5173
+6. Create a .env file 
+Backend runs http://localhost:4000 
+7. Run the frontend npm run dev  http://localhost:5173
 
-🔐 Authentication Flow (How It Works) User registers or logs in Backend
+🔐** Authentication Flow **
+(How It Works) User registers or logs in Backend
 returns { user, token } Frontend stores user & token in localStorage
-Axios interceptor attaches Authorization: Bearer `<token>`{=html}
-Protected routes check if AuthContext.user exists User can access:
+Axios interceptor attaches Authorization: Bearer `<token>`
+**Protected routes** check if AuthContext.user exists User can access:
 /projects /projects/:projectId If not logged in → redirected to /auth.
 
-📡 API Endpoints (Backend) Auth Projects Tasks
+📡** API Endpoints** (Backend) 
+Auth Projects Tasks
 
-🧪 Testing With Postman Register: POST /api/users/register Login: POST
-/api/users/login Test a protected route with a valid token.
+🧪 **Testing With Postman **
+Register: POST /api/users/register 
+Login: POST/api/users/login 
+Test a protected route with a valid token.
 
-🎯 Future Improvements Features you can add later: Edit and Delete Tasks
-User profile page Home Page Improvements
+🎯** Future Improvements Features to add later **
+Edit and Delete Tasks
+User profile page 
+Home Page Improvements
