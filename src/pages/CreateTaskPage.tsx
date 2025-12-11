@@ -35,19 +35,19 @@ export default function CreateTaskPage() {
       {error && <p className="text-red-500">{error}</p>}
 
       <input
-        className="block mt-2 p-2 text-black"
+        className="block mt-2 p-2 text-white"
         placeholder="Task title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
       />
       <input
-        className="block mt-2 p-2 text-black"
+        className="block mt-2 p-2 text-white"
         placeholder="Task description"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
       />
       <select
-        className="block mt-2 p-2 text-black"
+        className="block mt-2 p-2 text-white"
         value={status}
         onChange={(e) => setStatus(e.target.value as "todo" | "inprogress" | "done")}
       >
