@@ -19,16 +19,17 @@ const navigate=useNavigate() //to redirect to another login/register
 
   const handleLogin = async (e:React.FormEvent) => {
     e.preventDefault()
+    if(!auth) return;
     try {
-      setError("");
+      
       setLoading(true);
-      if (!auth) return;
+      setError("");
+  
         await auth.logIn(email, password); //calls login function from AuthProvider
 
       navigate("/projects") //redirects user to project page
       
     } catch (error: any) {
-      console.error(error.message);
       setError(error.message || "Login Failed");
     } finally {
       setLoading(false);
@@ -37,15 +38,17 @@ const navigate=useNavigate() //to redirect to another login/register
 
   const handleRegister = async (e:React.FormEvent) => {
     e.preventDefault()
+    if(!auth) return;
     try {
-      setError("");
+      
       setLoading(true);
-      if(!auth) return;
+      setError("");
+      console.log(username, email,password)
       await auth.register(username, email, password) //calls register function from Authprovider
       
       navigate("/projects") //redirects after successful register
     } catch (error: any) {
-      console.error(error.message);
+      console.log(error)
       setError(error.message ||"Register Failed");
     } finally {
       setLoading(false);
@@ -59,130 +62,61 @@ const navigate=useNavigate() //to redirect to another login/register
       </h1>
 
       {/* ERROR  */}
-      {error && <div>{error}</div>}
+      {error && <div className="text-red-500 mt-2">{error}</div>}
 
       {/* FORM  */}
-      {showRegister ? (
+    
         <form
-          onSubmit={handleRegister}
-          className="border mt-10 p-2 h-60 w-150 flex flex-col justify-around items-center rounded"
-        >
-          <div className="text-xl font-bold">Register</div>
-
-          <label htmlFor="username">
-            Username:
+        onSubmit={showRegister ? handleRegister : handleLogin}
+        className="border mt-10 p-4 flex flex-col gap-2 rounded w-80 bg-zinc-800"
+      >
+        {showRegister && (
+          <input
+            className="p-2 text-white"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        )}
+          
             <input
-            
-              type="text"
-              name="username"
-              id=""
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="ml-2 border rounded"
-            />
-          </label>
-          <label htmlFor="email">
-            Email:
-            <input
-              type="text"
-              name="email"
-              id=""
+               placeholder="Email"
+              className="p-2 text-white"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="ml-10 border rounded"
               required
             />
-          </label>
+  
 
-          <label htmlFor="password">
-            Password:
+          
             <input
-              type="password"
-              name="password"
-              id=""
+              placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="ml-3 border rounded"
+              className="p-2 text-white"
             />
-          </label>
+       
 
-          <input
-            type="submit"
-            value="Register"
-            className="border py-2 px-4 rounded"
-          />
+          <button className="bg-blue-600 py-2 mt-2 rounded" type="submit">
+          {showRegister ? "Register" : "Login"}
+        </button>
+        {loading && <div className="animate-pulse mt-2">Loading...</div>}
+      </form>
 
-          {/* LOADING  */}
-          {loading && <div className="animate-pulse">...</div>}
-        </form>
-      ) : (
-        //Login Form
-        <form
-          onSubmit={handleLogin}
-          className="border mt-10 p-2 h-60 w-150 flex flex-col justify-around items-center rounded"
-        >
-          <div className="text-xl font-bold">Login</div>
-          {/*Email */}
-          <label htmlFor="email">
-            Email:
-            <input
-              type="text"
-              name="email"
-              id=""
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="ml-10 border rounded"
-            />
-          </label>
-
-           {/*Password */}
-          <label htmlFor="password">
-            Password:
-            <input
-              type="password"
-              name="password"
-              id=""
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="ml-3 border rounded"
-            />
-          </label>
-
-          <input
-            type="submit"
-            value="Login"
-            className="border py-2 px-4 rounded"
-          />
-
-          {/* LOADING  */}
-          {loading && <div className="animate-pulse">...</div>}
-        </form>
-      )}
-
-      {/* TOGGLE FORM between Login/Register  */}
-      {showRegister ? (
-        <div>
-          Already have an account?{" "}
-          <span
-            className="text-blue-500 hover:cursor-pointer"
-            onClick={() => setShowRegister(false)}
-          >
-            Sign in
-          </span>{" "}
-        </div>
-      ) : (
-        <div>
-          Don't have an account?{" "}
-          <span
-            className="text-blue-500 hover:cursor-pointer"
-            onClick={() => setShowRegister(true)}
-          >
-            Sign up
-          </span>{" "}
-        </div>
-      )}
+      <div className="mt-4">
+        {showRegister ? (
+          <span>
+            Already have an account?{" "}
+            <span className="text-blue-500 cursor-pointer" onClick={() => setShowRegister(false)}>Sign in</span>
+          </span>
+        ) : (
+          <span>
+            Don't have an account?{" "}
+            <span className="text-blue-500 cursor-pointer" onClick={() => setShowRegister(true)}>Sign up</span>
+          </span>
+        )}
+      </div>
     </div>
   );
 }
-
-export default AuthPage;
+export default AuthPage

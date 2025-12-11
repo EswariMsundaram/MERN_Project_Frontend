@@ -1,95 +1,78 @@
-import React, {createContext, useState, useEffect} from "react";
-import type {User} from "../types";
-import {apiClient} from "../clients/api";
+import React, { createContext, useState, useEffect } from "react";
+import { apiClient } from "../clients/api";
+import type { User } from "../types";
 
+// Auth context interface
 interface AuthContextType {
-  user: User | null; //Logged-in user info
-  setUser: (user: User|null) => void; //Manually update user
-  logIn: (email: string, password: string) => void; 
+  user: User | null;
+  setUser: (user: User | null) => void;
+  token: string | null;
+  setToken: (token: string | null) => void;
+  logIn: (email: string, password: string) => void;
   register: (username: string, email: string, password: string) => void;
   logOut: () => void;
-  token: string | null; //JWT token from backend
-  setToken: (token: string|null) => void; //Manually update token
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
-
-//Create Auth context with default value null
+// Create Auth context
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 interface AuthProviderProps {
   children: React.ReactNode;
 }
 
+// AuthProvider wraps the whole app
 export default function AuthProvider({ children }: AuthProviderProps) {
-  // Checks if there is a token in localStorage and set them in state
   const [user, setUser] = useState<User | null>(() => {
-    try {
-      const value = localStorage.getItem("user")
-      return value ? JSON.parse(value) : null //convert JSON->object
-    } catch {
-      return null
-    }
+    const saved = localStorage.getItem("user");
+    return saved ? JSON.parse(saved) : null;
   });
 
-  //token state restored from local storage
   const [token, setToken] = useState<string | null>(() => {
-    try {
-      const value = localStorage.getItem("token")
-      return value ? JSON.parse(value) : null
-    } catch  {
-      return null
-    }
+    const saved = localStorage.getItem("token");
+    return saved ? JSON.parse(saved) : null;
   });
 
-  //this keeps the user saved in local storage so anytime "user" state changes
+  // Sync user with localStorage
   useEffect(() => {
-    if(user) {
-        localStorage.setItem("user", JSON.stringify(user))
-    }else {
-        localStorage.removeItem("user") //remove when logout
-    }
-    }, [user]);
+    if (user) localStorage.setItem("user", JSON.stringify(user));
+    else localStorage.removeItem("user");
+  }, [user]);
 
-   // Keeps the token saved in local storage and the token state changes anytime
-   useEffect(()=>{
-    if(token) {
-         localStorage.setItem("token", JSON.stringify(token))
-    }else{
-        localStorage.removeItem("token")
-    }
-   },[token])
+  // Sync token with localStorage
+  useEffect(() => {
+    if (token) localStorage.setItem("token", JSON.stringify(token));
+    else localStorage.removeItem("token");
+  }, [token]);
 
-   //Login function
+  // Login function
   const logIn = async (email: string, password: string) => {
-    const res=await apiClient.post("/api/users/login", {email,password}) //calls backend
-    //backend returns user and token
-    const {user:userData, token:jwt}=res.data
-    setUser(userData) //set the logged in user
-    setToken(jwt) //set the JWT token
+    const res = await apiClient.post("/api/users/login", { email, password });
+    const { user: u, token: t } = res.data;
+    setUser(u);
+    setToken(t);
   };
 
-  //Register function
+  // Register function
   const register = async (username: string, email: string, password: string) => {
-    //calls the backend
-    const res=await apiClient.post("/api/users/register",{
-        username, email, password
-    })
-    const {user:userData, token:jwt}=res.data // saves user and token
-    setUser(userData)
-    setToken(jwt)
+    console.log(username,email,password)
+    const res = await apiClient.post("/api/users/register", {
+      username,
+      email,
+      password,
+    });
+    const { user: u, token: t } = res.data;
+    setUser(u);
+    setToken(t);
   };
 
-  //logout functions - clears everything
+  // Logout function
   const logOut = () => {
-    setUser(null)
-    setToken(null)
+    setUser(null);
+    setToken(null);
   };
 
   return (
-    <AuthContext.Provider
-      value={{ user, setUser, logIn, register, logOut, token, setToken }}
-    >
+    <AuthContext.Provider value={{ user, setUser, token, setToken, logIn, register, logOut }}>
       {children}
     </AuthContext.Provider>
   );

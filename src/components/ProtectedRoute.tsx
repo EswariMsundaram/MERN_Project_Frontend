@@ -11,12 +11,11 @@ export default function ProtectedRoute({ children }: Props) {
   const auth = useContext(AuthContext);
 
   //if AuthContext is missing, redirects and replace
-  if (!auth) return <Navigate to="/auth" replace />;
-
-  //if user is not logged in it redirects and replace
-  if (!auth.user) {
+  if (!auth || !auth.user) {
     return <Navigate to="/auth" replace />;
   }
+    
+
 //if logged in show the protected page
   return children;
 }

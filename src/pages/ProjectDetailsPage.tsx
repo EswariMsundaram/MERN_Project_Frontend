@@ -1,7 +1,7 @@
 
 import { useEffect,useState } from "react"
 import { apiClient } from "../clients/api"
-import { useParams } from "react-router-dom"
+import { useParams, Link } from "react-router-dom"
 import type { Project,Task } from "../types"
 function ProjectDetailsPage(){
      const [project,setProject]=useState<Project|null>(null)
@@ -14,20 +14,20 @@ function ProjectDetailsPage(){
         const {projectId}=useParams()
     
         useEffect(()=>{
-            const fetchProjectDetails=async ()=>{
+            const fetchProject=async ()=>{
                 try{
                     setLoadingProject(true)//start loading project
                     const res=await apiClient.get(`/api/projects/${projectId}`);
-                    console.log(res.data)
+                    //console.log(res.data)
                     setProject(res.data)
                 }catch(error:any){
-                    console.log(error)
+                    //console.log(error)
                     setError("Failed to load project")
                 }finally{
                     setLoadingProject(false) //done loading project
                 }
             }
-            fetchProjectDetails()
+            fetchProject()
         },[projectId])
 
         useEffect(() => {
@@ -37,7 +37,7 @@ function ProjectDetailsPage(){
             const taskRes = await apiClient.get(`/api/projects/${projectId}/tasks`);
             setTasks(taskRes.data ||[])
         } catch (error) {
-            console.error(error);
+            //console.error(error);
             setError("Failed to load tasks")
             
         }finally{
@@ -51,30 +51,27 @@ function ProjectDetailsPage(){
   if (error) return <div className="text-3xl text-white">{error}</div>;
     return(
         <div className="text-white">
-            <h1>Project Details</h1>
-            <div>
-                <div className="text-2xl">{project?.name}</div>
-                <div className="text-xl">{project?.description}</div>
-            </div>
+                <h1 className="text-2xl text-white">{project?.name}</h1>
+                <p className="text-xl text-white">{project?.description}</p>
+           <Link to={`/projects/${projectId}/tasks/create`} className="bg-sky-500 py-1 px-2 rounded mt-4 inline-block">Create Task</Link>
 
-            <div>
-                <h2>Tasks</h2>
+           
+                <h2 className="text-2xl mt-6">Tasks</h2>
                 {tasks.length===0 ?
-                (<div>No task yet</div>):
+                (<p>No task yet</p>):
                 (
                     <ul>
                         {tasks.map((t)=>(
                             <li key={t._id}>
-                                <div>{t.title}</div>
-                                <div>{t.description}</div>
-                                <div>{t.status}</div>
+                                <h3>{t.title}</h3>
+                                <p>{t.description}</p>
+                                <p>Status: {t.status || "To Do"}</p>
                             </li>
                         ))}
                     </ul>
                 )
                 }
             </div>
-        </div>
     )
 }
 export default ProjectDetailsPage
