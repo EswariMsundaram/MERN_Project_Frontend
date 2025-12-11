@@ -69,6 +69,9 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   const logOut = () => {
     setUser(null);
     setToken(null);
+    localStorage.clear();
+sessionStorage.clear();
+
   };
 
   return (
