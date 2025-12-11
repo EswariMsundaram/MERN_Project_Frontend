@@ -8,7 +8,7 @@ export default function CreateTaskPage() {
   const { projectId } = useParams();
   const navigate = useNavigate();
   const [description, setDescription] = useState("");
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState<"todo" | "inprogress" | "done">("todo");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -49,7 +49,7 @@ export default function CreateTaskPage() {
       <select
         className="block mt-2 p-2 text-black"
         value={status}
-        onChange={(e) => setStatus(e.target.value as "To Do" | "In Progress" | "Done")}
+        onChange={(e) => setStatus(e.target.value as "todo" | "inprogress" | "done")}
       >
         <option value="todo">To Do</option>
         <option value="inprogress">In Progress</option>
