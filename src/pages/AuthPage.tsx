@@ -72,6 +72,7 @@ const navigate=useNavigate() //to redirect to another login/register
           <label htmlFor="username">
             Username:
             <input
+            
               type="text"
               name="username"
               id=""
